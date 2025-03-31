@@ -71,8 +71,3 @@ router.delete('/clear/:userId',async (req, res) => {
 
 module.exports = router;
 
-
-// router.post("/add", cartController.addToCart);
-// router.get("/:userId", cartController.getCart);
-// router.post("/remove", cartController.removeFromCart);
-// router.delete("/clear/:userId", cartController.clearCart);

@@ -75,6 +75,16 @@ router.post("/", upload.single("image"), async (req, res) => {
     }
 });
 
+// Get trending products (Example: Fetch top 5 products based on category or stock)
+router.get("/trending", async (req, res) => {
+    try {
+      const trendingProducts = await Product.find().limit(5); // Adjust limit as needed
+      res.json(trendingProducts);
+    } catch (err) {
+      res.status(500).json({ message: "Server Error" });
+    }
+  });
+
 // ✅ Get All Products
 router.get("/", async (req, res) => {
     try {
