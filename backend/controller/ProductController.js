@@ -29,7 +29,7 @@ const uploadToS3 = async (file) => {
     }
 
     const fileName = `products/${Date.now()}-${file.originalname}`;
-    
+
     const uploadParams = {
         Bucket: process.env.AWS_S3_BUCKET_NAME,
         Key: fileName,
@@ -78,12 +78,28 @@ router.post("/", upload.single("image"), async (req, res) => {
 // Get trending products (Example: Fetch top 5 products based on category or stock)
 router.get("/trending", async (req, res) => {
     try {
-      const trendingProducts = await Product.find().limit(5); // Adjust limit as needed
-      res.json(trendingProducts);
+        const trendingProducts = await Product.find().limit(5); // Adjust limit as needed
+        res.json(trendingProducts);
     } catch (err) {
-      res.status(500).json({ message: "Server Error" });
+        res.status(500).json({ message: "Server Error" });
     }
-  });
+});
+
+// Get products by category
+router.get("/category/:category", async (req, res) => {
+    try {
+        const category = req.params.category;
+        const products = await Product.find({ category });
+
+        if (products.length === 0) {
+            return res.status(404).json({ message: "No products found in this category" });
+        }
+
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching products", error });
+    }
+});
 
 // ✅ Get All Products
 router.get("/", async (req, res) => {

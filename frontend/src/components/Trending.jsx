@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { Link } from 'react-router-dom';
 
 const Trending = () => {
   const { user } = useAuth(); // Get logged-in user from AuthContext
@@ -78,15 +79,15 @@ const Trending = () => {
         <div className="row">
           {products.map((product) => (
             <div key={product._id} className="col-md-4 col-lg-3 mb-4">
-              <div className="card shadow-sm">
+              <div style={{height:'450px'}} className="card shadow-sm">
                 <img
                   src={product.imageUrl}
                   className="card-img-top"
                   alt={product.name}
-                  style={{ height: "200px", objectFit: "cover" }}
+                  style={{ height: "200px", objectFit: "contain" }}
                 />
                 <div className="card-body">
-                  <h5 className="card-title text-dark">{product.name}</h5>
+                  <Link to={`/productdetails/${product._id}`}><h5 className="card-title text-dark">{product.name}</h5></Link>
                   <p className="card-text">{product.description}</p>
                   <p className="card-text text-success fw-bold">
                     ₹{product.price}
