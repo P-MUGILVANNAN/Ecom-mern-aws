@@ -4,8 +4,9 @@ import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { user, logout, cartCount } = useAuth(); // Get user, logout, and cart count
+  // console.log("User:", user); // Log the user for debugging
 
-  console.log("Cart Count:", cartCount); // Log the cart count for debugging
+  // console.log("Cart Count:", cartCount); // Log the cart count for debugging
 
   return (
     <nav className="navbar navbar-expand-lg bg-dark">
