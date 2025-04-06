@@ -8,7 +8,7 @@ dotenv.config();
 const userRoute = require('./controller/UserController');
 const productRoute = require('./controller/ProductController');
 const cartRoute = require('./controller/CartController');
-
+const contactRoute = require('./controller/ContactController');
 
 app.use(cors());
 app.use(express.json()); 
@@ -23,6 +23,8 @@ mongoose
 app.use('/api/auth',userRoute);
 app.use("/api/products", productRoute);
 app.use("/api/cart",cartRoute);
+app.use("/api/contact",contactRoute);
+
 
 
 app.get('/',(req,res)=>{

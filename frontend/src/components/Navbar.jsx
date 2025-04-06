@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  const { user, logout } = useAuth(); // Get user state & logout function
+  const { user, logout, cartCount } = useAuth(); // Get user, logout, and cart count
+
+  console.log("Cart Count:", cartCount); // Log the cart count for debugging
 
   return (
     <nav className="navbar navbar-expand-lg bg-dark">
@@ -24,6 +26,7 @@ const Navbar = () => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
+
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav align-items-center gap-lg-5 ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
@@ -46,17 +49,23 @@ const Navbar = () => {
                 <i className="bi bi-phone"></i> Mobiles
               </Link>
             </li>
+
+            {/* Cart Button with Badge */}
             <li className="nav-item">
               <Link to="/cart" className="nav-link">
-                <button className="btn btn-warning text-dark">
+                <button className="btn btn-warning text-dark position-relative">
                   <i className="bi bi-cart"></i> Cart
+                  {cartCount > 0 && (
+                    <span className="position-absolute badge text-bg-danger">
+                      {cartCount}
+                    </span>
+                  )}
                 </button>
               </Link>
             </li>
 
             {/* Conditional Rendering: Show Signup if No User, Profile if Logged In */}
             {user ? (
-              // Profile Dropdown when user is logged in
               <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle text-light"
@@ -77,7 +86,6 @@ const Navbar = () => {
                 </ul>
               </li>
             ) : (
-              // Signup Button when user is not logged in
               <li className="nav-item">
                 <Link to="/signup" className="nav-link">
                   <button className="btn btn-secondary">

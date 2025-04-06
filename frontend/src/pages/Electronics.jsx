@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import Carousel from "../components/Carousel";
 
 const Electronics = () => {
-  const { user } = useAuth();
+  const { user, setCartCount } = useAuth(); // ⬅️ Get setCartCount from AuthContext
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -41,21 +41,50 @@ const Electronics = () => {
 
   // Add to Cart
   const handleAddToCart = async (productId) => {
-    if (!user) {
+    if (!user || !user.userId) {
       setMessage("Please log in to add items to the cart.");
       return;
     }
 
-    try {
-      const response = await axios.post("http://localhost:5000/api/cart/add", {
-        userId: user._id,
-        productId,
-        quantity: quantities[productId] || 1,
-      });
+    const requestData = {
+      userId: user.userId,
+      productId,
+      quantity: quantities[productId] || 1,
+    };
 
+    console.log("📤 Sending Add to Cart Request:", requestData);
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/cart/add", requestData);
+      console.log("🛒 Add to Cart Response:", response.data);
       setMessage(response.data.message);
+
+      await fetchCart(); // ⬅️ Update the cart count after successful addition
     } catch (err) {
+      console.error("❌ Error adding to cart:", err.response ? err.response.data : err);
       setMessage("Error adding to cart. Try again.");
+    }
+  };
+
+  // Fetch Cart (used to update cart count after adding product)
+  const fetchCart = async () => {
+    if (!user || !user.userId) return;
+
+    try {
+      const response = await axios.get(`http://localhost:5000/api/cart/${user.userId}`);
+      const cartItems = Array.isArray(response.data.cart)
+        ? response.data.cart
+        : response.data;
+
+      const count = cartItems.reduce(
+        (total, item) => total + (item.quantity || 1),
+        0
+      );
+
+      setCartCount(count); // ✅ Update global cart count for badge
+      console.log("✅ Updated Cart Count:", count);
+    } catch (err) {
+      console.error("❌ Error fetching cart:", err.response ? err.response.data : err);
     }
   };
 

@@ -1,0 +1,18 @@
+/* Zoom Effect */
+.zoom-container {
+    overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    width: 100%;
+    height: auto;
+  }
+  
+  .zoom-image {
+    transition: transform 0.2s ease-in-out;
+    width: 100%;
+  }
+  
+  .zoom-image:hover {
+    transform: scale(1.5);
+  }
+  

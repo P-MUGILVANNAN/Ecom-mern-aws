@@ -11,6 +11,7 @@ import Cart from './pages/Cart';
 import { AuthProvider } from './context/AuthContext';
 import ProductDetails from './pages/ProductDetails';
 import Footer from './components/Footer';
+import './App.css'
 
 function App() {
   return (

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const Trending = () => {
-  const { user } = useAuth(); // Get logged-in user from AuthContext
+  const { user, setCartCount } = useAuth(); // ⬅️ Get setCartCount from AuthContext
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState("");
-  const [quantities, setQuantities] = useState({}); // Track quantity for each product
+  const [quantities, setQuantities] = useState({});
 
   // Fetch trending products
   useEffect(() => {
@@ -18,44 +18,73 @@ const Trending = () => {
       .then((response) => {
         setProducts(response.data);
         setLoading(false);
-        // Initialize quantity state for each product
+
         const initialQuantities = {};
         response.data.forEach((product) => {
           initialQuantities[product._id] = 1;
         });
         setQuantities(initialQuantities);
       })
-      .catch((err) => {
+      .catch(() => {
         setError("Failed to load products");
         setLoading(false);
       });
   }, []);
 
-  // Handle quantity change with buttons
+  // Handle quantity change
   const handleQuantityChange = (productId, change) => {
     setQuantities((prev) => ({
       ...prev,
-      [productId]: Math.max(1, (prev[productId] || 1) + change), // Ensure quantity doesn't go below 1
+      [productId]: Math.max(1, (prev[productId] || 1) + change),
     }));
   };
 
-  // Add to Cart Function
+  // Add to Cart
   const handleAddToCart = async (productId) => {
-    if (!user) {
+    if (!user || !user.userId) {
       setMessage("Please log in to add items to the cart.");
       return;
     }
 
-    try {
-      const response = await axios.post("http://localhost:5000/api/cart/add", {
-        userId: user._id, // Get user ID from AuthContext
-        productId,
-        quantity: quantities[productId] || 1, // Use selected quantity
-      });
+    const requestData = {
+      userId: user.userId,
+      productId,
+      quantity: quantities[productId] || 1,
+    };
 
-      setMessage(response.data.message); // Show success message
+    console.log("📤 Sending Add to Cart Request:", requestData);
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/cart/add", requestData);
+      console.log("🛒 Add to Cart Response:", response.data);
+      setMessage(response.data.message);
+
+      await fetchCart(); // ⬅️ Update the cart count after successful addition
     } catch (err) {
+      console.error("❌ Error adding to cart:", err.response ? err.response.data : err);
       setMessage("Error adding to cart. Try again.");
+    }
+  };
+
+  // Fetch Cart (used to update cart count after adding product)
+  const fetchCart = async () => {
+    if (!user || !user.userId) return;
+
+    try {
+      const response = await axios.get(`http://localhost:5000/api/cart/${user.userId}`);
+      const cartItems = Array.isArray(response.data.cart)
+        ? response.data.cart
+        : response.data;
+
+      const count = cartItems.reduce(
+        (total, item) => total + (item.quantity || 1),
+        0
+      );
+
+      setCartCount(count); // ✅ Update global cart count for badge
+      console.log("✅ Updated Cart Count:", count);
+    } catch (err) {
+      console.error("❌ Error fetching cart:", err.response ? err.response.data : err);
     }
   };
 
@@ -79,7 +108,7 @@ const Trending = () => {
         <div className="row">
           {products.map((product) => (
             <div key={product._id} className="col-md-4 col-lg-3 mb-4">
-              <div style={{height:'450px'}} className="card shadow-sm">
+              <div style={{ height: "450px" }} className="card shadow-sm">
                 <img
                   src={product.imageUrl}
                   className="card-img-top"
@@ -87,13 +116,15 @@ const Trending = () => {
                   style={{ height: "200px", objectFit: "contain" }}
                 />
                 <div className="card-body">
-                  <Link to={`/productdetails/${product._id}`}><h5 className="card-title text-dark">{product.name}</h5></Link>
+                  <Link to={`/productdetails/${product._id}`}>
+                    <h5 className="card-title text-dark">{product.name}</h5>
+                  </Link>
                   <p className="card-text">{product.description}</p>
                   <p className="card-text text-success fw-bold">
                     ₹{product.price}
                   </p>
 
-                  {/* Quantity Selector with Buttons */}
+                  {/* Quantity Selector */}
                   <div className="d-flex align-items-center justify-content-center mb-2">
                     <button
                       className="btn btn-sm btn-danger"
@@ -101,7 +132,9 @@ const Trending = () => {
                     >
                       -
                     </button>
-                    <span className="mx-2 fs-5">{quantities[product._id] || 1}</span>
+                    <span className="mx-2 fs-5">
+                      {quantities[product._id] || 1}
+                    </span>
                     <button
                       className="btn btn-sm btn-success"
                       onClick={() => handleQuantityChange(product._id, 1)}
