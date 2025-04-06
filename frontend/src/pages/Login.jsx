@@ -17,12 +17,20 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:5000/api/auth/signin", formData);
-      login(res.data); // Update auth context
+  
+      // Destructure user details from response
+      const { userId, name, email, token } = res.data;
+  
+      // Store in AuthContext
+      login({ userId, name, email, token });
+  
       navigate("/"); // Redirect to Home after login
     } catch (err) {
+      console.error("Login error:", err);
       setError("Invalid email or password");
     }
   };
+  
 
   return (
     <div className="container mt-5">
