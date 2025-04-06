@@ -44,6 +44,32 @@ router.post("/signin", async (req, res) => {
   }
 });
 
+// GET /api/user/:id
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    res.json(user);
+  } catch (err) {
+    res.status(400).json({ message: "User not found" });
+  }
+});
+
+// PUT /api/user/:id
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(400).json({ message: "Failed to update user" });
+  }
+});
+
+
 // Protected Route (Example)
 router.get("/protected", verifyToken, (req, res) => {
   res.json({ message: "Protected data accessed!" });

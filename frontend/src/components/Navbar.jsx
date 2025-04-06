@@ -80,6 +80,9 @@ const Navbar = () => {
                 </a>
                 <ul className="dropdown-menu dropdown-menu-end">
                   <li>
+                    <button className="dropdown-item">
+                      <Link to={'/profile'} className="text-dark text-decoration-none"><i className="bi bi-box-arrow-right"></i> Profile</Link>
+                    </button>
                     <button className="dropdown-item" onClick={logout}>
                       <i className="bi bi-box-arrow-right"></i> Logout
                     </button>

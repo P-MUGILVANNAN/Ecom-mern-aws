@@ -67,6 +67,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
     setUser(null);
     setCartCount(0);
+    navigate("/"); // ✅ redirect after logout
   }, []);
 
   return (

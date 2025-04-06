@@ -4,7 +4,9 @@ const bcrypt = require("bcryptjs");
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String }, // If using Google auth, this can be nullable
+  phone: { type: String, default: "" }, // optional
+  address: { type: String, default: "" }, // optional
 });
 
 // Hash password before saving
@@ -14,7 +16,6 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-// Compare password for login
 UserSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };

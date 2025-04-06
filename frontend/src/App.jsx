@@ -12,6 +12,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProductDetails from './pages/ProductDetails';
 import Footer from './components/Footer';
 import './App.css'
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path='/signup' element={<Signup />} />
           <Route path='/login' element={<Login />} />
           <Route path='/cart' element={<Cart />} />
+          <Route path='/profile' element={<Profile />} />
           <Route path='/productdetails/:id' element={<ProductDetails />} />
         </Routes>
         <Footer />
