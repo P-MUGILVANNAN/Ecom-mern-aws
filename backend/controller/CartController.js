@@ -5,7 +5,7 @@ const Product = require("../controller/ProductController");
 const router = express.Router();
 
 router.post("/add", async (req, res) => {
-  console.log("🚀 Received Add to Cart Request:", req.body);
+  // console.log("🚀 Received Add to Cart Request:", req.body);
 
   const { userId, productId, quantity } = req.body;
   if (!userId || !productId || !quantity) {
@@ -35,7 +35,7 @@ router.post("/add", async (req, res) => {
 router.get("/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    console.log("Received userId:", userId); // Debugging
+    // console.log("Received userId:", userId); // Debugging
 
     // Ensure userId is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -45,11 +45,11 @@ router.get("/:userId", async (req, res) => {
     const cart = await Cart.findOne({ userId }).populate("items.productId");
     
     if (!cart) {
-      console.log("No cart found for user:", userId);
+      // console.log("No cart found for user:", userId);
       return res.json({ items: [] }); // Return empty cart instead of error
     }
 
-    console.log("Cart fetched:", cart); // Debugging
+    // console.log("Cart fetched:", cart); // Debugging
 
     res.json(cart.items.map(item => ({
       _id: item.productId._id,

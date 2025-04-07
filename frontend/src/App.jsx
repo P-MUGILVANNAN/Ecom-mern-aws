@@ -13,6 +13,8 @@ import ProductDetails from './pages/ProductDetails';
 import Footer from './components/Footer';
 import './App.css'
 import Profile from './pages/Profile';
+import Payment from './pages/Payment';
+import AddAddress from './pages/AddAddress';
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/cart' element={<Cart />} />
           <Route path='/profile' element={<Profile />} />
+          <Route path='/payment' element={<Payment />} />
+          <Route path='/add-address' element={<AddAddress />} />
           <Route path='/productdetails/:id' element={<ProductDetails />} />
         </Routes>
         <Footer />

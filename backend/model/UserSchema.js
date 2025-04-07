@@ -6,7 +6,16 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String }, // If using Google auth, this can be nullable
   phone: { type: String, default: "" }, // optional
-  address: { type: String, default: "" }, // optional
+  address: {
+    fullName: String,
+    phone: String,
+    street: String,
+    landmark: String,
+    city: String,
+    state: String,
+    zip: String,
+    country: { type: String, default: "India" }
+  }
 });
 
 // Hash password before saving

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Cart = () => {
@@ -8,6 +8,7 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   // Update global cart count based on items
   const updateGlobalCartCount = (items) => {
@@ -28,8 +29,8 @@ const Cart = () => {
         const data = Array.isArray(res.data)
           ? res.data
           : Array.isArray(res.data.cart)
-          ? res.data.cart
-          : [];
+            ? res.data.cart
+            : [];
         setCartItems(data);
         updateGlobalCartCount(data); // 🆕 Set global cart count
         setLoading(false);
@@ -109,7 +110,7 @@ const Cart = () => {
         </div>
       ) : (
         <div className="row">
-          <div className="col-md-8">
+          <div className="col-md-7">
             {cartItems.map((item) => (
               <div key={item._id} className="card mb-3 shadow-sm">
                 <div className="row g-0">
@@ -152,15 +153,19 @@ const Cart = () => {
             ))}
           </div>
 
-          <div className="col-md-4">
+          <div className="col-md-5">
             <div className="card shadow">
               <div className="card-body">
                 <h4>Order Summary</h4>
                 <p className="text-muted">Total Items: {cartItems.length}</p>
                 <h5>Total Price: ₹{totalPrice.toFixed(2)}</h5>
-                <button className="btn btn-success w-100 mt-3">
+                <button
+                  className="btn btn-success w-100 mt-3"
+                  onClick={() => navigate("/payment")}
+                >
                   Proceed to Checkout
                 </button>
+
               </div>
             </div>
           </div>

@@ -17,11 +17,10 @@ export const AuthProvider = ({ children }) => {
   const fetchCartCount = useCallback(async (userId) => {
     try {
       const res = await axios.get(`http://localhost:5000/api/cart/${userId}`);
-      const data = Array.isArray(res.data.cart)
-        ? res.data.cart
-        : res.data || [];
-
-      const count = data.reduce(
+      const cartItems = Array.isArray(res.data) ? res.data :
+                        Array.isArray(res.data.cart) ? res.data.cart : [];
+  
+      const count = cartItems.reduce(
         (total, item) => total + (item.quantity || 1),
         0
       );
@@ -31,6 +30,7 @@ export const AuthProvider = ({ children }) => {
       setCartCount(0);
     }
   }, []);
+  
 
   // 🔁 Auto-login if user stored in localStorage
   useEffect(() => {
