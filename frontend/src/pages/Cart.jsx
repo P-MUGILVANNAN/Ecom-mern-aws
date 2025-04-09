@@ -110,54 +110,74 @@ const Cart = () => {
         </div>
       ) : (
         <div className="row">
-          <div className="col-md-7">
-            {cartItems.map((item) => (
-              <div key={item._id} className="card mb-3 shadow-sm">
-                <div className="row g-0">
-                  <div className="col-md-4">
-                    <img
-                      src={item.imageUrl}
-                      className="img-fluid rounded"
-                      alt={item.name}
-                    />
-                  </div>
-                  <div className="col-md-8 d-flex align-items-center">
-                    <div className="card-body">
-                      <h5 className="card-title">{item.name}</h5>
-                      <p className="card-text text-muted">₹{item.price} each</p>
-                      <div className="d-flex align-items-center">
+          <div className="col-md-7 mb-4">
+            <div className="table-responsive">
+              <table className="table table-bordered align-middle">
+                <thead className="table-light">
+                  <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cartItems.map((item) => (
+                    <tr key={item._id}>
+                      <td>{item.name}</td>
+                      <td>
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="img-fluid"
+                          style={{ maxWidth: "60px", borderRadius: "5px" }}
+                        />
+                      </td>
+                      <td>₹{item.price}</td>
+                      <td>
+                        <div className="d-flex align-items-center">
+                          <button
+                            className="btn btn-sm btn-danger"
+                            onClick={() => handleQuantityChange(item._id, -1)}
+                          >
+                            -
+                          </button>
+                          <span className="mx-2">{item.quantity}</span>
+                          <button
+                            className="btn btn-sm btn-success"
+                            onClick={() => handleQuantityChange(item._id, 1)}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </td>
+                      <td>₹{(item.price * item.quantity).toFixed(2)}</td>
+                      <td>
                         <button
-                          className="btn btn-sm btn-danger"
-                          onClick={() => handleQuantityChange(item._id, -1)}
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => handleRemoveItem(item._id)}
                         >
-                          -
+                          Remove
                         </button>
-                        <span className="mx-2">{item.quantity}</span>
-                        <button
-                          className="btn btn-sm btn-success"
-                          onClick={() => handleQuantityChange(item._id, 1)}
-                        >
-                          +
-                        </button>
-                      </div>
-                      <button
-                        className="btn btn-sm btn-outline-danger mt-2"
-                        onClick={() => handleRemoveItem(item._id)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
+
 
           <div className="col-md-5">
             <div className="card shadow">
               <div className="card-body">
                 <h4>Order Summary</h4>
-                <p className="text-muted">Total Items: {cartItems.length}</p>
+                <p className="text-muted">
+                  Total Items: {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                </p>
+
                 <h5>Total Price: ₹{totalPrice.toFixed(2)}</h5>
                 <button
                   className="btn btn-success w-100 mt-3"
