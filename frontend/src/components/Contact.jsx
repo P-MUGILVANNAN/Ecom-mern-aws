@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import emailjs from "@emailjs/browser";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -13,12 +14,41 @@ const Contact = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const sendEmailJS = () => {
+    const templateParams = {
+      from_name: formData.name,
+      from_email: formData.email,
+      to_name: "Mugilvannan P", // Or whoever should receive it
+      message: formData.message,
+    };
+
+    emailjs
+      .send(
+        "service_clts9rs",    // 🔁 Replace with your EmailJS Service ID
+        "template_rs0dqel",   // 🔁 Replace with your Template ID
+        templateParams,
+        "xbR15LwPRtNlxyzKP"     // 🔁 Replace with your Public Key (NOT private key)
+      )
+      .then((response) => {
+        console.log("✅ Email sent:", response.text);
+      })
+      .catch((err) => {
+        console.error("❌ EmailJS error:", err);
+      });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Send data to backend (MongoDB)
       const response = await axios.post("http://localhost:5000/api/contact/submit", formData);
       setMessage(response.data.message);
-      setFormData({ name: "", email: "", message: "" }); // Reset form
+
+      // Send email via EmailJS
+      sendEmailJS();
+
+      // Clear the form
+      setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       setMessage("Error submitting the form. Try again.");
     }
@@ -27,7 +57,6 @@ const Contact = () => {
   return (
     <div className="container mt-5">
       <div className="row align-items-center">
-        {/* Left Side - Contact Form */}
         <div className="col-md-6">
           <h2 className="mb-4">Contact Us</h2>
           {message && <div className="alert alert-info">{message}</div>}
@@ -69,7 +98,6 @@ const Contact = () => {
           </form>
         </div>
 
-        {/* Right Side - Contact Image */}
         <div className="col-md-6 text-center">
           <img
             src="https://img.freepik.com/free-vector/flat-design-illustration-customer-support_23-2148887720.jpg"
